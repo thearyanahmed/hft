@@ -13,8 +13,6 @@ import (
 	"github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/config"
 	"github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/handler"
 	logger "github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/logger"
-	"github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/repository"
-	"github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/service"
 )
 
 func main() {
@@ -26,11 +24,7 @@ func main() {
 
 	logger.SetupLogger(conf)
 
-	repo := repository.NewInMemoryRepository()
-
-	svc := service.NewService(repo)
-
-	router := handler.NewRouter(svc)
+	router := handler.NewRouter()
 
 	address := conf.AppAddress()
 
@@ -50,7 +44,7 @@ func main() {
 		go func() {
 			<-shutdownCtx.Done()
 			if shutdownCtx.Err() == context.DeadlineExceeded {
-				log.Fatal("graceful shutdown timed out.. forcing exit.")
+				log.Fatal("Graceful shutdown timed out.. forcing exit.")
 			}
 		}()
 
