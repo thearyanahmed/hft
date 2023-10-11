@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: app
+    build:
+      dockerfile: Dockerfile
+      context: .
+    command: make run
+    environment:
+      SERVE_PORT: '${SERVE_PORT}'
+      LOG_LEVEL: '${LOG_LEVEL}'
+    ports:
+      - "${SERVE_PORT}:${SERVE_PORT}"
+    volumes:
+      - ./:/app
