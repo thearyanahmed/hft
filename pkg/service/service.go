@@ -7,7 +7,7 @@ type Service struct {
 }
 
 type ConfigRepository interface {
-	Store() error
+	Store(entity schema.ConfigMap) error
 	Find() ([]schema.ConfigMap, error)
 	Update() error
 	Delete() error
