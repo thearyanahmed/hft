@@ -12,7 +12,7 @@ import (
 
 	"github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/config"
 	"github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/handler"
-	logger "github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/logger"
+	"github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/logger"
 	"github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/repository"
 	"github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/service"
 )
