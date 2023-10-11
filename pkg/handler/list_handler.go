@@ -4,18 +4,28 @@ import (
 	"net/http"
 
 	"github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/presenter"
+	"github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/schema"
 )
 
 type listHandler struct {
-	listSvc listService
+	listSvc ListService
 }
 
-type listService interface{}
+type ListService interface {
+	Find() ([]schema.ConfigMap, error)
+}
 
-func NewListHandler(listSvc listService) *listHandler {
+func NewListHandler(listSvc ListService) *listHandler {
 	return &listHandler{listSvc: listSvc}
 }
 
 func (h *listHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	presenter.RenderJsonResponse(w, r, http.StatusOK, map[string]string{"sanity": "check"})
+	configList, err := h.listSvc.Find()
+
+	if err != nil {
+		presenter.ErrorResponse(w, r, presenter.ErrFrom(err))
+		return
+	}
+
+	presenter.RenderJsonResponse(w, r, http.StatusOK, configList)
 }
