@@ -6,7 +6,10 @@ type ConfigMap struct {
 }
 
 type FilterOptions struct {
-	Limit     int32
-	Query     map[string]string // metadata.allergens.eggs=true
-	SelectAll bool
+	Limit int32
+	Query map[string]string
+
+	// If set to true, it will return all values if query is empty.
+	// Therefore, it'll not match anything and just select all the values until the given Limit
+	SelectAllIfQueryIsEmpty bool
 }

@@ -63,9 +63,10 @@ func (r *InMemoryRepository) Find(options *schema.FilterOptions) ([]schema.Confi
 
 	count := int32(0)
 
+	queryLength := len(options.Query)
+
 	for _, config := range r.configs {
-		fmt.Printf("count %d options.limit %d\n", count, options.Limit)
-		if !options.SelectAll && count == options.Limit {
+		if !options.SelectAllIfQueryIsEmpty && count == options.Limit && queryLength == 0 {
 			break
 		}
 
