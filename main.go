@@ -10,13 +10,23 @@ import (
 	"syscall"
 	"time"
 
+	logger "github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/logger"
+	"github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/config"
 	"github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/handler"
 )
 
 func main() {
+	conf, err := config.FromENV()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	logger.SetupLogger(conf)
+
 	router := handler.NewRouter()
 
-	address := "localhost:8001"
+	address := conf.AppAddress()
 
 	server := &http.Server{Addr: address, Handler: router}
 
@@ -47,10 +57,9 @@ func main() {
 	}()
 
 	// Run the server
-
 	fmt.Printf("will be serving on: %s\n", address)
 
-	err := server.ListenAndServe()
+	err = server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
 		log.Fatal(err)
 	}
