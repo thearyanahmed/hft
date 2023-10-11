@@ -17,13 +17,6 @@ func (_ *Response) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func ErrUnauthorized() *Response {
-	return &Response{
-		HttpStatusCode: http.StatusUnauthorized,
-		Message:        "unauthorized.",
-	}
-}
-
 func ErrFrom(err error) *Response {
 	return &Response{
 		HttpStatusCode: http.StatusUnprocessableEntity,
