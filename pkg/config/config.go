@@ -11,7 +11,7 @@ const DefaultMinimumTripDistance = float64(500) // in meters
 
 type (
 	Config struct {
-		ServePort string `envconfig:"SERVE_PORT" required:"true"`
+		ServePort int    `envconfig:"SERVE_PORT" required:"true"`
 		LogLevel  string `envconfig:"LOG_LEVEL" required:"false"`
 	}
 )
@@ -28,7 +28,7 @@ func FromENV() (*Config, error) {
 }
 
 func (c *Config) AppAddress() string {
-	return fmt.Sprintf("0.0.0.0:%s", c.ServePort)
+	return fmt.Sprintf("0.0.0.0:%d", c.ServePort)
 }
 
 func (c *Config) GetLogLevel() string {
