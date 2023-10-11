@@ -12,7 +12,7 @@ type listHandler struct {
 }
 
 type ListService interface {
-	Find() ([]schema.ConfigMap, error)
+	Find(options *schema.FilterOptions) ([]schema.ConfigMap, error)
 }
 
 func NewListHandler(listSvc ListService) *listHandler {
@@ -20,7 +20,12 @@ func NewListHandler(listSvc ListService) *listHandler {
 }
 
 func (h *listHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	configList, err := h.listSvc.Find()
+	options := &schema.FilterOptions{
+		Limit:     0,
+		SelectAll: true,
+	}
+
+	configList, err := h.listSvc.Find(options)
 
 	if err != nil {
 		presenter.ErrorResponse(w, r, presenter.ErrFrom(err))

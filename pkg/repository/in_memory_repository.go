@@ -11,12 +11,6 @@ type InMemoryRepository struct {
 	configs []schema.ConfigMap
 }
 
-type FilterOptions struct {
-	Limit     int32
-	Query     map[string]string // metadata.allergens.eggs=true
-	SelectAll bool
-}
-
 func NewInMemoryRepository() *InMemoryRepository {
 	configMaps := make([]schema.ConfigMap, 0)
 	configMaps = fakeData()
@@ -64,21 +58,44 @@ func (r *InMemoryRepository) Store(configMap schema.ConfigMap) error {
 	return nil
 }
 
-func (r *InMemoryRepository) Find() ([]schema.ConfigMap, error) {
-	return r.configs, nil
+func (r *InMemoryRepository) Find(options *schema.FilterOptions) ([]schema.ConfigMap, error) {
+	result := make([]schema.ConfigMap, 0)
+
+	count := int32(0)
+
+	for _, config := range r.configs {
+		fmt.Printf("count %d options.limit %d\n", count, options.Limit)
+		if !options.SelectAll && count == options.Limit {
+			break
+		}
+
+		result = append(result, config)
+		count++
+	}
+
+	return result, nil
 }
 
-func (r *InMemoryRepository) Update() error {
-	name := "some-name"
-	entity := schema.ConfigMap{}
-
-	index, found := r.findIndexByName(name)
+func (r *InMemoryRepository) Update(entity schema.ConfigMap) error {
+	index, found := r.findIndexByName(entity.Name)
 
 	if !found {
-		return fmt.Errorf("no resoruce found with index name %s", name)
+		return fmt.Errorf("no resoruce found with index name %s", entity.Name)
 	}
 
 	r.configs[index] = entity
+
+	return nil
+}
+
+func (r *InMemoryRepository) Delete(entity schema.ConfigMap) error {
+	index, found := r.findIndexByName(entity.Name)
+
+	if !found {
+		return fmt.Errorf("no resoruce found with index name %s", entity.Name)
+	}
+
+	r.configs = append(r.configs[:index], r.configs[index+1:]...)
 
 	return nil
 }
@@ -92,18 +109,4 @@ func (r *InMemoryRepository) findIndexByName(name string) (int, bool) {
 	}
 
 	return 0, false
-}
-
-func (r *InMemoryRepository) Delete() error {
-	name := "hello"
-
-	index, found := r.findIndexByName(name)
-
-	if !found {
-		return fmt.Errorf("no resoruce found with index name %s", name)
-	}
-
-	r.configs = append(r.configs[:index], r.configs[index+1:]...)
-
-	return nil
 }

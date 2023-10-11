@@ -8,9 +8,9 @@ type Service struct {
 
 type ConfigRepository interface {
 	Store(entity schema.ConfigMap) error
-	Find() ([]schema.ConfigMap, error)
-	Update() error
-	Delete() error
+	Find(options *schema.FilterOptions) ([]schema.ConfigMap, error)
+	Update(entity schema.ConfigMap) error
+	Delete(entity schema.ConfigMap) error
 }
 
 func NewService(configRepo ConfigRepository) *Service {
@@ -23,17 +23,17 @@ func NewInMemoryRepository() *Service {
 	return &Service{}
 }
 
-func (s *Service) Store() error {
-	return nil
+func (s *Service) Store(entity schema.ConfigMap) error {
+	return s.configRepo.Store(entity)
 }
 
 // @todo note use filters and limit
-func (s *Service) Find() ([]schema.ConfigMap, error) {
-	return s.configRepo.Find()
+func (s *Service) Find(options *schema.FilterOptions) ([]schema.ConfigMap, error) {
+	return s.configRepo.Find(options)
 }
-func (s *Service) Update() error {
-	return nil
+func (s *Service) Update(entity schema.ConfigMap) error {
+	return s.configRepo.Update(entity)
 }
-func (s *Service) Delete() error {
+func (s *Service) Delete(entity schema.ConfigMap) error {
 	return nil
 }
