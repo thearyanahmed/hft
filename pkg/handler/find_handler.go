@@ -45,11 +45,7 @@ func (h *findHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(configs) == 0 {
-		errRes := &presenter.Response{
-			HttpStatusCode: http.StatusNotFound,
-			Message:        fmt.Sprintf("could not find config with name '%s'", name),
-		}
-		presenter.ErrorResponse(w, r, errRes)
+		presenter.ErrorResponse(w, r, presenter.ErrNotFound())
 		return
 	}
 

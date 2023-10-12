@@ -38,5 +38,7 @@ func NewRouter(svc ConfigManager) http.Handler {
 	r.With(apiMiddleware.ValidateContentTypeMiddleware).
 		Delete("/configs/{name}", NewDeleteHandler(svc).ServeHTTP)
 
+	r.Get("/search", NewSearchHandler(svc).ServeHTTP)
+
 	return r
 }

@@ -44,11 +44,10 @@ func fakeData() []schema.ConfigMap {
 	var configMap schema.ConfigMap
 	err := json.Unmarshal([]byte(jsonData), &configMap)
 	if err != nil {
-		fmt.Println("Error:", err)
 		return configMaps
 	}
 
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 1; i++ {
 		configMap.Name = fmt.Sprintf("%s-%d", configMap.Name, i)
 		configMaps = append(configMaps, configMap)
 	}
@@ -57,11 +56,8 @@ func fakeData() []schema.ConfigMap {
 }
 
 func (r *InMemoryRepository) Store(configMap schema.ConfigMap) (schema.ConfigMap, error) {
-	fmt.Println("new config", configMap)
-	fmt.Println("len", len(r.configs))
 
 	r.configs = append(r.configs, configMap)
-	fmt.Println("after len", len(r.configs))
 
 	return configMap, nil
 }
@@ -94,12 +90,46 @@ func (r *InMemoryRepository) Find(options *schema.FilterOptions) ([]schema.Confi
 					count++
 
 					continue
+				} else {
+					// nested maps
+					flat := flatten(config.Metadata, "metadata")
+
+					// need to make sure all of the keys match
+
+					if val, ok := flat[k]; ok {
+						if v == val {
+							result = append(result, config)
+							count++
+						}
+					}
 				}
 			}
 		}
 	}
 
 	return result, nil
+}
+
+func flatten(data interface{}, prefix string) map[string]interface{} {
+	flattened := make(map[string]interface{})
+
+	switch v := data.(type) {
+	case map[string]interface{}:
+		for key, val := range v {
+			newKey := key
+			if prefix != "" {
+				newKey = prefix + "." + key
+			}
+			submap := flatten(val, newKey)
+			for k, v := range submap {
+				flattened[k] = v
+			}
+		}
+	default:
+		flattened[prefix] = v
+	}
+
+	return flattened
 }
 
 func (r *InMemoryRepository) Update(name string, entity schema.ConfigMap) (schema.ConfigMap, error) {
