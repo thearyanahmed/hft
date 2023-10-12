@@ -14,7 +14,7 @@ type StoreConfigRequest struct {
 
 func (r *StoreConfigRequest) Rules() govalidator.MapData {
 	return govalidator.MapData{
-		"name":     []string{"required", "alpha_space"},
+		"name":     []string{"required", "alpha_dash"},
 		"metadata": []string{"required", "json"},
 	}
 }
