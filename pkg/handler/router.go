@@ -11,10 +11,11 @@ import (
 )
 
 type ConfigManager interface {
-	Store(entity schema.ConfigMap) error
+	Store(entity schema.ConfigMap) (schema.ConfigMap, error)
 	Find(options *schema.FilterOptions) ([]schema.ConfigMap, error)
 	Update(entity schema.ConfigMap) error
 	Delete(entity schema.ConfigMap) error
+	Exists(name string) bool
 }
 
 func NewRouter(svc ConfigManager) http.Handler {
@@ -24,8 +25,8 @@ func NewRouter(svc ConfigManager) http.Handler {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.With(apiMiddleware.ValidateContentTypeMiddleware).
-		Get("/configs", NewListHandler(svc).ServeHTTP)
+	r.Get("/configs", NewListHandler(svc).ServeHTTP)
+	r.With(apiMiddleware.ValidateContentTypeMiddleware).Post("/configs", NewStoreHandler(svc).ServeHTTP)
 
 	return r
 }

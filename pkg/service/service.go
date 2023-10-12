@@ -7,10 +7,11 @@ type Service struct {
 }
 
 type ConfigRepository interface {
-	Store(entity schema.ConfigMap) error
+	Store(entity schema.ConfigMap) (schema.ConfigMap, error)
 	Find(options *schema.FilterOptions) ([]schema.ConfigMap, error)
 	Update(entity schema.ConfigMap) error
 	Delete(entity schema.ConfigMap) error
+	Exists(name string) bool
 }
 
 func NewService(configRepo ConfigRepository) *Service {
@@ -23,7 +24,7 @@ func NewInMemoryRepository() *Service {
 	return &Service{}
 }
 
-func (s *Service) Store(entity schema.ConfigMap) error {
+func (s *Service) Store(entity schema.ConfigMap) (schema.ConfigMap, error) {
 	return s.configRepo.Store(entity)
 }
 
@@ -37,4 +38,8 @@ func (s *Service) Update(entity schema.ConfigMap) error {
 
 func (s *Service) Delete(entity schema.ConfigMap) error {
 	return nil
+}
+
+func (s *Service) Exists(name string) bool {
+	return s.configRepo.Exists(name)
 }

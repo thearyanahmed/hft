@@ -52,10 +52,14 @@ func fakeData() []schema.ConfigMap {
 	return configMaps
 }
 
-func (r *InMemoryRepository) Store(configMap schema.ConfigMap) error {
-	r.configs = append(r.configs, configMap)
+func (r *InMemoryRepository) Store(configMap schema.ConfigMap) (schema.ConfigMap, error) {
+	fmt.Println("new config", configMap)
+	fmt.Println("len", len(r.configs))
 
-	return nil
+	r.configs = append(r.configs, configMap)
+	fmt.Println("after len", len(r.configs))
+
+	return configMap, nil
 }
 
 func (r *InMemoryRepository) Find(options *schema.FilterOptions) ([]schema.ConfigMap, error) {
@@ -99,6 +103,12 @@ func (r *InMemoryRepository) Delete(entity schema.ConfigMap) error {
 	r.configs = append(r.configs[:index], r.configs[index+1:]...)
 
 	return nil
+}
+
+func (r *InMemoryRepository) Exists(name string) bool {
+	_, found := r.findIndexByName(name)
+
+	return found
 }
 
 // returns index, foundOrNot
