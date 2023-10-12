@@ -27,13 +27,14 @@ func (s *Service) Store(entity schema.ConfigMap) error {
 	return s.configRepo.Store(entity)
 }
 
-// @todo note use filters and limit
 func (s *Service) Find(options *schema.FilterOptions) ([]schema.ConfigMap, error) {
 	return s.configRepo.Find(options)
 }
+
 func (s *Service) Update(entity schema.ConfigMap) error {
 	return s.configRepo.Update(entity)
 }
+
 func (s *Service) Delete(entity schema.ConfigMap) error {
 	return nil
 }

@@ -6,10 +6,10 @@ type ConfigMap struct {
 }
 
 type FilterOptions struct {
-	Limit int32
-	Query map[string]string
+	Limit      int32
+	Conditions map[string]string
 
-	// If set to true, it will return all values if query is empty.
+	// If set to true, it will return all values if Conditions is empty.
 	// Therefore, it'll not match anything and just select all the values until the given Limit
-	SelectAllIfQueryIsEmpty bool
+	SelectAllIfConditionsAreEmpty bool
 }

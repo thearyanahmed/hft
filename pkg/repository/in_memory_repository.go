@@ -13,9 +13,9 @@ type InMemoryRepository struct {
 
 func NewInMemoryRepository() *InMemoryRepository {
 	configMaps := make([]schema.ConfigMap, 0)
-	configMaps = fakeData()
 
-	fmt.Println(configMaps)
+	// @todo remove
+	configMaps = fakeData()
 
 	return &InMemoryRepository{
 		configs: configMaps,
@@ -63,10 +63,10 @@ func (r *InMemoryRepository) Find(options *schema.FilterOptions) ([]schema.Confi
 
 	count := int32(0)
 
-	queryLength := len(options.Query)
+	queryLength := len(options.Conditions)
 
 	for _, config := range r.configs {
-		if !options.SelectAllIfQueryIsEmpty && count == options.Limit && queryLength == 0 {
+		if !options.SelectAllIfConditionsAreEmpty && count == options.Limit && queryLength == 0 {
 			break
 		}
 

@@ -21,7 +21,7 @@ func NewListHandler(listSvc ListService) *listHandler {
 
 func (h *listHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	options := &schema.FilterOptions{
-		SelectAllIfQueryIsEmpty: true,
+		SelectAllIfConditionsAreEmpty: true,
 	}
 
 	configList, err := h.listSvc.Find(options)
