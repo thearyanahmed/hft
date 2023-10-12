@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -25,6 +24,7 @@ func main() {
 	}
 
 	logger.SetupLogger(conf)
+	svcLogger := logger.Logger()
 
 	repo := repository.NewInMemoryRepository()
 
@@ -63,7 +63,7 @@ func main() {
 	}()
 
 	// Run the server
-	fmt.Printf("will be serving on: %s\n", address)
+	svcLogger.Printf("will be serving on: %s", address)
 
 	err = server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {

@@ -20,13 +20,17 @@ func NewSearchHandler(searchSvc SearchService) *searchHandler {
 }
 
 func (h *searchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	queryParams := r.URL.Query()
+
+	queryMap := make(map[string]string)
+	for key, val := range queryParams {
+		queryMap[key] = val[0]
+	}
+
 	options := &schema.FilterOptions{
 		SelectAllIfConditionsAreEmpty: false,
 		Limit:                         100,
-		Conditions: map[string]string{
-			"metadata.allergens.nuts": "false",
-			"metadata.allergens.eggs": "true",
-		},
+		Conditions:                    queryMap,
 	}
 
 	configs, err := h.searchSvc.Find(options)

@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/hellofreshdevtests/HFtest-platform-engineering-thearyanahmed/pkg/schema"
@@ -14,49 +13,12 @@ type InMemoryRepository struct {
 func NewInMemoryRepository() *InMemoryRepository {
 	configMaps := make([]schema.ConfigMap, 0)
 
-	// @todo remove
-	configMaps = fakeData()
-
 	return &InMemoryRepository{
 		configs: configMaps,
 	}
 }
 
-func fakeData() []schema.ConfigMap {
-	jsonData := `
-	{
-		"name": "datacenter-1",
-		"metadata": {
-			"monitoring": {
-				"enabled": "true"
-			},
-			"limits": {
-				"cpu": {
-					"enabled": "false",
-					"value": "300m"
-				}
-			}
-		}
-	}
-	`
-	var configMaps []schema.ConfigMap
-
-	var configMap schema.ConfigMap
-	err := json.Unmarshal([]byte(jsonData), &configMap)
-	if err != nil {
-		return configMaps
-	}
-
-	for i := 0; i < 1; i++ {
-		configMap.Name = fmt.Sprintf("%s-%d", configMap.Name, i)
-		configMaps = append(configMaps, configMap)
-	}
-
-	return configMaps
-}
-
 func (r *InMemoryRepository) Store(configMap schema.ConfigMap) (schema.ConfigMap, error) {
-
 	r.configs = append(r.configs, configMap)
 
 	return configMap, nil
@@ -65,45 +27,45 @@ func (r *InMemoryRepository) Store(configMap schema.ConfigMap) (schema.ConfigMap
 func (r *InMemoryRepository) Find(options *schema.FilterOptions) ([]schema.ConfigMap, error) {
 	result := make([]schema.ConfigMap, 0)
 
+	if options.Limit == 0 {
+		return result, nil
+	}
+
 	count := int32(0)
 
 	queryLength := len(options.Conditions)
 
 	for _, config := range r.configs {
-		if options.SelectAllIfConditionsAreEmpty && queryLength == 0 {
-			if count == options.Limit {
-				break
-			}
+		if count == options.Limit {
+			break
+		}
 
+		if options.SelectAllIfConditionsAreEmpty && queryLength == 0 {
 			result = append(result, config)
 			count++
 
-		} else {
+			continue
+		}
 
-			if count == options.Limit {
+		dataMap := make(map[string]interface{})
+
+		dataMap["name"] = config.Name
+		dataMap["metadata"] = config.Metadata
+
+		dataMap = flatten(dataMap, "")
+
+		matchesAllConditions := true
+
+		for key, value := range options.Conditions {
+			if val, ok := dataMap[key]; !ok || val != value {
+				matchesAllConditions = false
 				break
 			}
+		}
 
-			for k, v := range options.Conditions {
-				if k == "name" && config.Name == v {
-					result = append(result, config)
-					count++
-
-					continue
-				} else {
-					// nested maps
-					flat := flatten(config.Metadata, "metadata")
-
-					// need to make sure all of the keys match
-
-					if val, ok := flat[k]; ok {
-						if v == val {
-							result = append(result, config)
-							count++
-						}
-					}
-				}
-			}
+		if matchesAllConditions {
+			result = append(result, config)
+			count++
 		}
 	}
 
