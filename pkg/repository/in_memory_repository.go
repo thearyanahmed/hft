@@ -102,16 +102,16 @@ func (r *InMemoryRepository) Find(options *schema.FilterOptions) ([]schema.Confi
 	return result, nil
 }
 
-func (r *InMemoryRepository) Update(entity schema.ConfigMap) error {
-	index, found := r.findIndexByName(entity.Name)
+func (r *InMemoryRepository) Update(name string, entity schema.ConfigMap) (schema.ConfigMap, error) {
+	index, found := r.findIndexByName(name)
 
 	if !found {
-		return fmt.Errorf("no resoruce found with index name %s", entity.Name)
+		return schema.ConfigMap{}, fmt.Errorf("no resoruce found with index name %s", name)
 	}
 
 	r.configs[index] = entity
 
-	return nil
+	return entity, nil
 }
 
 func (r *InMemoryRepository) Delete(name string) error {

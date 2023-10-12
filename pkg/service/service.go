@@ -9,7 +9,7 @@ type Service struct {
 type ConfigRepository interface {
 	Store(entity schema.ConfigMap) (schema.ConfigMap, error)
 	Find(options *schema.FilterOptions) ([]schema.ConfigMap, error)
-	Update(entity schema.ConfigMap) error
+	Update(name string, entity schema.ConfigMap) (schema.ConfigMap, error)
 	Delete(name string) error
 	Exists(name string) bool
 }
@@ -32,8 +32,8 @@ func (s *Service) Find(options *schema.FilterOptions) ([]schema.ConfigMap, error
 	return s.configRepo.Find(options)
 }
 
-func (s *Service) Update(entity schema.ConfigMap) error {
-	return s.configRepo.Update(entity)
+func (s *Service) Update(name string, entity schema.ConfigMap) (schema.ConfigMap, error) {
+	return s.configRepo.Update(name, entity)
 }
 
 func (s *Service) Delete(name string) error {

@@ -13,7 +13,7 @@ import (
 type ConfigManager interface {
 	Store(entity schema.ConfigMap) (schema.ConfigMap, error)
 	Find(options *schema.FilterOptions) ([]schema.ConfigMap, error)
-	Update(entity schema.ConfigMap) error
+	Update(name string, entity schema.ConfigMap) (schema.ConfigMap, error)
 	Delete(name string) error
 	Exists(name string) bool
 }
@@ -26,11 +26,17 @@ func NewRouter(svc ConfigManager) http.Handler {
 	r.Use(middleware.Recoverer)
 
 	r.Get("/configs", NewListHandler(svc).ServeHTTP)
-	r.With(apiMiddleware.ValidateContentTypeMiddleware).Post("/configs", NewStoreHandler(svc).ServeHTTP)
+
+	r.With(apiMiddleware.ValidateContentTypeMiddleware).
+		Post("/configs", NewStoreHandler(svc).ServeHTTP)
 
 	r.Get("/configs/{name}", NewFindHandler(svc).ServeHTTP)
 
-	r.With(apiMiddleware.ValidateContentTypeMiddleware).Delete("/configs/{name}", NewDeleteHandler(svc).ServeHTTP)
+	r.With(apiMiddleware.ValidateContentTypeMiddleware).
+		Put("/configs/{name}", NewUpdateHandler(svc).ServeHTTP)
+
+	r.With(apiMiddleware.ValidateContentTypeMiddleware).
+		Delete("/configs/{name}", NewDeleteHandler(svc).ServeHTTP)
 
 	return r
 }
