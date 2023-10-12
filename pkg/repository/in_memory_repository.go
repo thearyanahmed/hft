@@ -37,7 +37,8 @@ func fakeData() []schema.ConfigMap {
 				}
 			}
 		}
-	}`
+	}
+	`
 	var configMaps []schema.ConfigMap
 
 	var configMap schema.ConfigMap
@@ -47,7 +48,10 @@ func fakeData() []schema.ConfigMap {
 		return configMaps
 	}
 
-	configMaps = append(configMaps, configMap)
+	for i := 0; i < 5; i++ {
+		configMap.Name = fmt.Sprintf("%s-%d", configMap.Name, i)
+		configMaps = append(configMaps, configMap)
+	}
 
 	return configMaps
 }
@@ -70,12 +74,29 @@ func (r *InMemoryRepository) Find(options *schema.FilterOptions) ([]schema.Confi
 	queryLength := len(options.Conditions)
 
 	for _, config := range r.configs {
-		if !options.SelectAllIfConditionsAreEmpty && count == options.Limit && queryLength == 0 {
-			break
-		}
+		if options.SelectAllIfConditionsAreEmpty && queryLength == 0 {
+			if count == options.Limit {
+				break
+			}
 
-		result = append(result, config)
-		count++
+			result = append(result, config)
+			count++
+
+		} else {
+
+			if count == options.Limit {
+				break
+			}
+
+			for k, v := range options.Conditions {
+				if k == "name" && config.Name == v {
+					result = append(result, config)
+					count++
+
+					continue
+				}
+			}
+		}
 	}
 
 	return result, nil
