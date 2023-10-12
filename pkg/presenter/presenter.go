@@ -51,6 +51,6 @@ func ErrorValidationFailed(validationErrors url.Values) *Response {
 func ErrInvalidContentType() *Response {
 	return &Response{
 		HttpStatusCode: http.StatusNotAcceptable,
-		Message:        "content-type must be application/json",
+		Message:        "content-type must be application/x-www-form-urlencoded",
 	}
 }

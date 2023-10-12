@@ -10,7 +10,7 @@ type ConfigRepository interface {
 	Store(entity schema.ConfigMap) (schema.ConfigMap, error)
 	Find(options *schema.FilterOptions) ([]schema.ConfigMap, error)
 	Update(entity schema.ConfigMap) error
-	Delete(entity schema.ConfigMap) error
+	Delete(name string) error
 	Exists(name string) bool
 }
 
@@ -36,8 +36,8 @@ func (s *Service) Update(entity schema.ConfigMap) error {
 	return s.configRepo.Update(entity)
 }
 
-func (s *Service) Delete(entity schema.ConfigMap) error {
-	return nil
+func (s *Service) Delete(name string) error {
+	return s.configRepo.Delete(name)
 }
 
 func (s *Service) Exists(name string) bool {

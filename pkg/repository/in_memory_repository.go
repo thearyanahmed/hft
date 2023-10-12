@@ -114,11 +114,11 @@ func (r *InMemoryRepository) Update(entity schema.ConfigMap) error {
 	return nil
 }
 
-func (r *InMemoryRepository) Delete(entity schema.ConfigMap) error {
-	index, found := r.findIndexByName(entity.Name)
+func (r *InMemoryRepository) Delete(name string) error {
+	index, found := r.findIndexByName(name)
 
 	if !found {
-		return fmt.Errorf("no resoruce found with index name %s", entity.Name)
+		return fmt.Errorf("no resoruce found with index name %s", name)
 	}
 
 	r.configs = append(r.configs[:index], r.configs[index+1:]...)
