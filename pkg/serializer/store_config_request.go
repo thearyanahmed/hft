@@ -38,6 +38,7 @@ func (r *StoreConfigRequest) ToConfigMapSchema() (schema.ConfigMap, error) {
 }
 
 // @todo note add layer count
+// @todo rename jsonToMap
 func convertNestedMaps(data interface{}) {
 	switch v := data.(type) {
 	case map[string]interface{}:

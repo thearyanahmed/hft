@@ -98,7 +98,7 @@ func (r *InMemoryRepository) Update(name string, entity schema.ConfigMap) (schem
 	index, found := r.findIndexByName(name)
 
 	if !found {
-		return schema.ConfigMap{}, fmt.Errorf("no resoruce found with index name %s", name)
+		return schema.ConfigMap{}, fmt.Errorf("no resource found with name %s", name)
 	}
 
 	r.configs[index] = entity
@@ -110,7 +110,7 @@ func (r *InMemoryRepository) Delete(name string) error {
 	index, found := r.findIndexByName(name)
 
 	if !found {
-		return fmt.Errorf("no resoruce found with index name %s", name)
+		return fmt.Errorf("no resource found with name %s", name)
 	}
 
 	r.configs = append(r.configs[:index], r.configs[index+1:]...)

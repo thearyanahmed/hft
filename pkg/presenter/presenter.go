@@ -13,6 +13,7 @@ type Response struct {
 	Details        url.Values `json:"details,omitempty"`
 }
 
+// Satisfy interface
 func (_ *Response) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }

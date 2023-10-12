@@ -6,15 +6,10 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
-const DefaultCooldownDuration = int64(10)       // in seconds
-const DefaultMinimumTripDistance = float64(500) // in meters
-
-type (
-	Config struct {
-		ServePort int    `envconfig:"SERVE_PORT" required:"true"`
-		LogLevel  string `envconfig:"LOG_LEVEL" required:"false"`
-	}
-)
+type Config struct {
+	ServePort int    `envconfig:"SERVE_PORT" required:"true"`
+	LogLevel  string `envconfig:"LOG_LEVEL" required:"false"`
+}
 
 // FromENV loads the environment variables to Config.
 func FromENV() (*Config, error) {
