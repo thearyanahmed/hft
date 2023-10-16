@@ -5,16 +5,7 @@ ARG SERVE_PORT
 ENV SERVE_PORT=$SERVE_PORT
 
 # Copy the binary from your local system to the container
-COPY build/app /app/app
-
-# Set the working directory
-WORKDIR /app
-
-# Define any necessary environment variables (if applicable)
-# ENV KEY=VALUE
-
-# Expose any necessary ports (if applicable)
-# EXPOSE 8080
+COPY build/app /app
 
 # Define the command to run your application
 CMD ["./app"]

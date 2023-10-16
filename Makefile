@@ -37,14 +37,22 @@ build:
 	  --build-arg LOG_LEVEL=$(LOG_LEVEL) \
 	  -f Dockerfile.prod .
 
-run-prod:
+run-prod-container:
+	@echo "Running standalone container"
 	docker run -p $(SERVE_PORT):$(SERVE_PORT) $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_BUILD_VERSION)
 
+deploy:
+	kubectl apply -f deployments/deployment.yaml -f deployments/service.yaml
+
+	@if [ "$(ENVIRONMENT)" = "local" ]; then \
+	    echo "Enviroment is 'local'. Tunneling LoadBalancer through minikube"; \
+		minikube tunnel --cleanup; \
+	fi
 deps:
 	${call app_container, mod vendor}
 
 test:
-	${call app_container, test -v ./pkg/handler/}
+	go test ./...
 
 #---- docker enviroment ----
 ifdef DOCKER_COMPOSE_EXISTS

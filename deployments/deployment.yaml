@@ -14,18 +14,6 @@ spec:
     spec:
       containers:
       - name: hf-test-app
-        image: hf_app:v1.3
+        image: hf_app:v2.1
         ports:
         - containerPort: 8001
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: hf-test-app-service
-spec:
-  selector:
-    app: hf-test-app
-  ports:
-    - protocol: TCP
-      port: 8001
-      targetPort: 8001

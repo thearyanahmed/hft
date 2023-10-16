@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: hf-app-config
-data:
-  SERVE_PORT: "8001"
-
