@@ -1,5 +1,15 @@
 # HelloFresh DevOps Test
 
+Table of contents
+
+1. [Running the application](#running-the-application)
+2. [Build Process](#build-process)
+3. [Architecture](#architecture)
+4. [Available Endpoints](#available-endpoints)
+5. [Common Errors](#common-erorrs)
+6. [Problem Definition](#problem-definition)
+7. [Instructions](#instructions)
+
 ## Running the application
 
 Run the following application to run the program.
@@ -261,6 +271,7 @@ The goal of this test is to assert (to some degree) your coding, testing, automa
 - List limit has been hardcoded to 100. It can come from query parameter + config value.
 - Simple happy and sad paths were covered for test cases.
 - An nginx ingress.yaml has been added but not being used.
+- Some unlisted commands can be found in [Makefile](Makefile)
 
 ## Problem definition
 
