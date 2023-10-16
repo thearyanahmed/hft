@@ -31,9 +31,6 @@ func (m *MockFindService) Find(options *schema.FilterOptions) ([]schema.ConfigMa
 }
 
 func TestFindHandler_ServeHTTP(t *testing.T) {
-	// Create a mock FindService
-
-	// Define a test case
 	tests := []testCase{
 		{
 			name:         "Successful find",
@@ -65,30 +62,24 @@ func TestFindHandler_ServeHTTP(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Set up the mock FindService response
 			mockService := new(MockFindService)
 			findHandlerInstance := NewFindHandler(mockService) // Renamed variable
 
 			tt.mock(mockService, tt)
 
-			// Create a request with the specified URL parameter
 			req := httptest.NewRequest(http.MethodGet, "/configs/"+tt.urlParam, nil)
 			w := httptest.NewRecorder()
 
-			// Use Chi router to handle the request
 			r := chi.NewRouter()
 			r.Method(http.MethodGet, "/configs/{name}", http.HandlerFunc(findHandlerInstance.ServeHTTP))
 			r.ServeHTTP(w, req)
 
-			// Assert the response code
 			assert.Equal(t, tt.expectedCode, w.Code)
 
-			// If an error was expected, assert that it was returned in the response body
 			if tt.expectedError != nil {
 				assert.Contains(t, w.Body.String(), tt.expectedError.Error())
 			}
 
-			// Reset the mock after each test case
 			mockService.AssertExpectations(t)
 		})
 	}

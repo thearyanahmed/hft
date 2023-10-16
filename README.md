@@ -89,7 +89,7 @@ Response example:
 Query example-2:
 
 ```sh
-curl http://config-service/search?metadata.allergens.eggs=true
+curl http://config-service/search?metadata.key7.key10=true
 ```
 
 Response example-2:
@@ -99,19 +99,19 @@ Response example-2:
   {
     "name": "burger-nutrition",
     "metadata": {
-      "calories": 230,
-      "fats": {
-        "saturated-fat": "0g",
-        "trans-fat": "1g"
+      "key0": 230,
+      "key1": {
+        "key2": "0g",
+        "key3": "1g"
       },
-      "carbohydrates": {
-          "dietary-fiber": "4g",
-          "sugars": "1g"
+      "key4": {
+          "key5": "4g",
+          "key6": "1g"
       },
-      "allergens": {
-        "nuts": "false",
-        "seafood": "false",
-        "eggs": "true"
+      "key7": {
+        "key9": "false",
+        "key8": "false",
+        "key10": "true"
       }
     }
   }

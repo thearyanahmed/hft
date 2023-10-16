@@ -37,6 +37,7 @@ func (h *deleteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err := h.deleteSvc.Delete(name)
+
 	if err != nil {
 		presenter.ErrorResponse(w, r, presenter.ErrFrom(err))
 		return
