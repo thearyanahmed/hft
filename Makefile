@@ -9,7 +9,7 @@ SRC_DIR=cmd/pkg
 DOCKER_IMAGE_NAME=hf_app
 DOCKER_IMAGE_BUILD_VERSION ?= v$(shell date +%s)
 
-.PHONY: start stop ps ssh run build deps test
+.PHONY: start stop ps ssh run build deps run-prod-container deploy test
 
 start:
 	@echo "starting application environment"
@@ -42,12 +42,28 @@ run-prod-container:
 	docker run -p $(SERVE_PORT):$(SERVE_PORT) $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_BUILD_VERSION)
 
 deploy:
+	@if [ "$(ENVIRONMENT)" = "local" ]; then \
+	    echo "Staring minikube and loading image"; \
+		minikube start ; \
+		minikube image load $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_BUILD_VERSION) ; \
+	fi
+
 	kubectl apply -f deployments/deployment.yaml -f deployments/service.yaml
 
 	@if [ "$(ENVIRONMENT)" = "local" ]; then \
-	    echo "Enviroment is 'local'. Tunneling LoadBalancer through minikube"; \
+	    echo "Tunneling LoadBalancer through minikube"; \
 		minikube tunnel --cleanup; \
 	fi
+
+shutdown:
+	@echo "Stopping kubernetes environment"
+
+	kubectl delete -f deployments/deployment.yaml -f deployments/service.yaml ; \
+
+	@if [ "$(ENVIRONMENT)" = "local" ]; then \
+		minikube stop; \
+	fi
+
 deps:
 	${call app_container, mod vendor}
 
